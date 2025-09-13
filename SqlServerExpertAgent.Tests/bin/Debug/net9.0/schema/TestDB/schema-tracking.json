@@ -1,7 +1,7 @@
 {
   "DatabaseName": "TestDB",
-  "TrackingBranch": "feature-schema",
-  "InitializedAt": "2025-09-13T19:47:10.6220192Z",
+  "TrackingBranch": "schema-main",
+  "InitializedAt": "2025-09-13T19:47:11.0947845Z",
   "SchemaVersion": "1.0.0",
   "TrackingConfig": {
     "TrackTables": true,

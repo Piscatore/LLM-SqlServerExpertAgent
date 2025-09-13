@@ -1,0 +1,16 @@
+{
+  "DatabaseName": "MyProject_Dev",
+  "TrackingBranch": "schema-main",
+  "InitializedAt": "2025-09-13T19:45:16.2595887Z",
+  "SchemaVersion": "1.0.0",
+  "TrackingConfig": {
+    "TrackTables": true,
+    "TrackViews": true,
+    "TrackStoredProcedures": true,
+    "TrackFunctions": true,
+    "TrackIndexes": true,
+    "TrackConstraints": true,
+    "TrackPermissions": false,
+    "ExcludeSystemObjects": true
+  }
+}

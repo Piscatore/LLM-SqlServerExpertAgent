@@ -15,10 +15,16 @@ LLM-SqlServerExpertAgent is a specialized AI agent built with Microsoft Semantic
 - **Plugin Architecture**: Assembly-separated extensions with hot-reload capability
 
 ### Project Structure
-- `SqlServerExpertAgent.Core/`: Core agent implementation
+- `SqlServerExpertAgent.Console/`: Interactive CLI application with professional command-line interface
+  - `Commands/`: Individual command implementations (validate, query, schema, etc.)
+  - `AgentConsoleService.cs`: Central orchestration service
+  - `InteractiveShell.cs`: Professional interactive shell implementation
+- `SqlServerExpertAgent.Core/`: Core agent implementation and shared library
   - `Configuration/`: Comprehensive configuration system with environment support
   - `Plugins/`: Plugin interfaces and core SQL Server plugin
-- `SqlServerExpertAgent.Tests/`: Test-first development with xUnit, Moq, FluentAssertions
+  - `Communication/`: Multi-agent communication (A2A protocol)
+  - `Templates/`: Declarative agent templates and factories
+- `SqlServerExpertAgent.Tests/`: Test-first development with xUnit, Moq, FluentAssertions (54+ tests)
 
 ## Development Philosophy
 
@@ -101,21 +107,24 @@ Designed for large knowledge volumes with:
 - **Dependency Resolution**: Topological sorting for initialization order
 - **Health Monitoring**: Plugin diagnostics and error tracking
 
-### Agent Collaboration Architecture *(New Design)*
-- **Hybrid Architecture**: Shared core with specialized domain agents
-- **VersionControlCore**: Centralized Git operations library for all version control needs
-- **Domain Agents**: Specialized agents (DatabaseVersion, FileVersion, etc.) with domain expertise
-- **Clean Boundaries**: Core handles "how to Git", agents handle "what to version and why"
-- **No Duplication**: Single implementation of Git functionality shared across all agents
-- **Atomic Operations**: Each domain agent owns complete workflows in their area
-- **Future Ready**: Easy extension for LLM memory versioning, configuration versioning, etc.
+### Hybrid Console + Core Architecture *(Current Implementation)*
+- **Console Application**: Interactive CLI with System.CommandLine framework
+- **Core Library**: Shared agent engine with plugin architecture
+- **Built-in Plugins**: SqlServerPlugin with comprehensive SMO integration
+- **Plugin System**: Hot-reloadable plugins with assembly isolation
+- **Configuration System**: Multi-environment support with JSON and environment variables
+- **A2A Protocol**: Multi-agent communication for future expansion
+- **Declarative Templates**: YAML/JSON configuration-driven agent creation
 
 ## Development Commands
 
 ### Build and Test
 ```bash
-dotnet build
-dotnet test
+dotnet build                    # Build entire solution
+dotnet test                     # Run all 54+ tests
+cd SqlServerExpertAgent.Console
+dotnet run -- --interactive     # Start interactive shell
+dotnet run -- query "SELECT 1"   # Direct command execution
 ```
 
 ### Plugin Development
@@ -144,8 +153,10 @@ Following Exner project patterns:
 ### Test Categories
 - **Configuration Tests**: Loading, validation, environment overrides
 - **SQL Validation Tests**: SMO integration, syntax checking, performance targets
-- **Plugin Tests**: Loading, dependency resolution, hot-reload
-- **Integration Tests**: End-to-end scenarios with real SQL Server
+- **Plugin Tests**: Loading, dependency resolution, hot-reload, built-in plugin functionality
+- **Integration Tests**: End-to-end scenarios with real SQL Server connectivity
+- **Console Tests**: Interactive shell, command parsing, error handling
+- **Performance Tests**: Response time validation (100ms target for syntax validation)
 
 ### Key Test Patterns
 - Bracket escaping validation: `[Column Name [with brackets]]`

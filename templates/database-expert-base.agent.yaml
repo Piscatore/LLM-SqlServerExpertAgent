@@ -1,0 +1,65 @@
+# Base template for database expert agents
+# Provides common database functionality that can be specialized
+
+name: "DatabaseExpertAgent"
+version: "1.0.0"
+description: "Base template for database expert agents with common database operations"
+
+personality:
+  responseStyle: "expert_concise"
+  expertiseLevel: "senior"
+  authoritative: true
+  proactiveOptimization: true
+  toneProfile: "professional"
+
+requiredSkills:
+  - name: "DatabaseConnectionSkill"
+    minVersion: "1.0.0"
+    priority: "Critical"
+    configuration:
+      defaultTimeout: 30
+      connectionPooling: true
+
+optionalSkills:
+  - name: "PerformanceAnalysisSkill"
+    minVersion: "1.0.0" 
+    priority: "High"
+  - name: "SecurityAnalysisSkill"
+    minVersion: "1.0.0"
+    priority: "Normal"
+
+infrastructure:
+  databases:
+    - name: "primary"
+      type: "Database"
+      purpose: "primary"
+      required: true
+      configuration:
+        backupRequired: true
+        monitoringEnabled: true
+
+  resources:
+    minMemoryMB: 512
+    maxMemoryMB: 2048
+    minCpuCores: 1
+    maxCpuCores: 2
+    diskSpaceMB: 1024
+
+defaultConfiguration:
+  logging:
+    level: "Information"
+    includePerformanceMetrics: true
+  performance:
+    responseTargets:
+      schema_introspection: 500
+      query_validation: 100
+  security:
+    allowDataModification: false
+    maxRowsReturned: 1000
+
+validationRules:
+  - name: "DatabaseConnection"
+    description: "Validate database connection is available"
+    validationExpression: "HasDatabaseConnection"
+    errorMessage: "No database connection configured"
+    isCritical: true

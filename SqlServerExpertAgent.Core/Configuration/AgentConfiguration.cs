@@ -238,6 +238,11 @@ public class SqlServerConfiguration
     };
 
     /// <summary>
+    /// Default database to use when none is specified
+    /// </summary>
+    public string? DefaultDatabase { get; set; } = "master";
+
+    /// <summary>
     /// SMO-specific settings
     /// </summary>
     public SmoConfiguration Smo { get; set; } = new();
@@ -285,6 +290,7 @@ public class QuerySafetyConfiguration
         "DROP", "TRUNCATE", "DELETE", "UPDATE", "INSERT"
     };
     public int MaxRowsReturned { get; set; } = 1000;
+    public int DefaultTimeout { get; set; } = 30;
 }
 
 /// <summary>
@@ -443,6 +449,11 @@ public class PluginConfiguration
     /// Plugin discovery and loading paths
     /// </summary>
     public List<string> PluginPaths { get; set; } = new() { "plugins/" };
+
+    /// <summary>
+    /// Plugin directories for discovery
+    /// </summary>
+    public List<string> PluginDirectories { get; set; } = new() { "plugins/", "extensions/" };
     
     /// <summary>
     /// Hot-reload configuration for plugins

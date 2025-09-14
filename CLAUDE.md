@@ -101,6 +101,15 @@ Designed for large knowledge volumes with:
 - **Dependency Resolution**: Topological sorting for initialization order
 - **Health Monitoring**: Plugin diagnostics and error tracking
 
+### Agent Collaboration Architecture *(New Design)*
+- **Hybrid Architecture**: Shared core with specialized domain agents
+- **VersionControlCore**: Centralized Git operations library for all version control needs
+- **Domain Agents**: Specialized agents (DatabaseVersion, FileVersion, etc.) with domain expertise
+- **Clean Boundaries**: Core handles "how to Git", agents handle "what to version and why"
+- **No Duplication**: Single implementation of Git functionality shared across all agents
+- **Atomic Operations**: Each domain agent owns complete workflows in their area
+- **Future Ready**: Easy extension for LLM memory versioning, configuration versioning, etc.
+
 ## Development Commands
 
 ### Build and Test

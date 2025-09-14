@@ -32,6 +32,10 @@ public class PluginManager : IDisposable
     {
         var results = new List<PluginLoadResult.PluginResult>();
         
+        // Load built-in plugins first
+        await LoadBuiltInPluginsAsync(results);
+        
+        // Then load external plugins from directories
         foreach (var pluginDirectory in _configuration.Plugins.PluginDirectories)
         {
             if (!Directory.Exists(pluginDirectory))
@@ -74,6 +78,31 @@ public class PluginManager : IDisposable
         }
 
         return new PluginLoadResult(results, DateTime.UtcNow);
+    }
+
+    /// <summary>
+    /// Load built-in plugins that are part of the core assembly
+    /// </summary>
+    private async Task LoadBuiltInPluginsAsync(List<PluginLoadResult.PluginResult> results)
+    {
+        try
+        {
+            // Load the built-in SqlServerPlugin
+            var sqlServerPlugin = new SqlServerPlugin();
+            var pluginName = sqlServerPlugin.Metadata.Name;
+            var coreAssembly = typeof(SqlServerPlugin).Assembly;
+            var builtInContext = new AssemblyLoadContext("BuiltIn-" + pluginName, isCollectible: false);
+            
+            _loadedPlugins[pluginName] = new LoadedPlugin(sqlServerPlugin, coreAssembly, builtInContext);
+            
+            results.Add(new PluginLoadResult.PluginResult(pluginName, true, "Built-in plugin loaded"));
+            _logger.LogDebug("Loaded built-in plugin: {Plugin}", pluginName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to load built-in SqlServerPlugin");
+            results.Add(new PluginLoadResult.PluginResult("SqlServerPlugin", false, ex.Message));
+        }
     }
 
     private async Task<PluginLoadResult.PluginResult> LoadPluginFromAssemblyAsync(string assemblyPath, Kernel kernel)

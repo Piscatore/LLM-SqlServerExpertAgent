@@ -3,7 +3,8 @@ using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using SqlServerExpertAgent.Configuration;
 using System.ComponentModel;
-using System.Data.SqlClient;
+using System.Data;
+using Microsoft.Data.SqlClient;
 
 namespace SqlServerExpertAgent.Plugins;
 
@@ -15,6 +16,7 @@ public class SqlServerPlugin : IAgentPlugin
 {
     private Server? _server;
     private AgentConfiguration? _configuration;
+    private string? _connectionString;
     private readonly Dictionary<string, object> _healthMetrics = new();
 
     public PluginMetadata Metadata { get; } = new(
@@ -34,9 +36,11 @@ public class SqlServerPlugin : IAgentPlugin
     {
         _configuration = configuration;
         
+        // Store connection string for SqlCommand usage
+        _connectionString = configuration.SqlServer.ConnectionStrings["default"];
+        
         // Initialize SMO connection
-        var connectionString = configuration.SqlServer.ConnectionStrings["default"];
-        var connection = new SqlConnection(connectionString);
+        var connection = new SqlConnection(_connectionString);
         var serverConnection = new ServerConnection(connection);
         
         _server = new Server(serverConnection);
@@ -147,10 +151,11 @@ public class SqlServerPlugin : IAgentPlugin
     }
 
     [KernelFunction]
-    [Description("Execute SQL query safely with results")]
+    [Description("Execute SQL query safely with results using SqlCommand")]
     public async Task<string> ExecuteSqlQuery(
         [Description("SQL SELECT query to execute")] string sql,
-        [Description("Maximum number of rows to return")] int maxRows = 100)
+        [Description("Maximum number of rows to return")] int maxRows = 100,
+        [Description("Command timeout in seconds")] int timeoutSeconds = 30)
     {
         try
         {
@@ -160,17 +165,25 @@ public class SqlServerPlugin : IAgentPlugin
                 return "Error: Data modification queries are not allowed in current configuration";
             }
 
-            var database = _server!.Databases[_configuration.SqlServer.DefaultDatabase ?? "master"];
-            var results = database.ExecuteWithResults(sql);
+            using var connection = new SqlConnection(_connectionString);
+            await connection.OpenAsync();
             
-            if (results.Tables.Count == 0)
+            using var command = new SqlCommand(sql, connection);
+            command.CommandTimeout = timeoutSeconds;
+            
+            // Use SqlDataAdapter for better control over results
+            using var adapter = new SqlDataAdapter(command);
+            var dataSet = new DataSet();
+            adapter.Fill(dataSet);
+            
+            if (dataSet.Tables.Count == 0)
                 return "Query executed successfully (no results returned)";
 
-            var table = results.Tables[0];
+            var table = dataSet.Tables[0];
             var output = new System.Text.StringBuilder();
             
             // Add column headers
-            var headers = table.Columns.Cast<System.Data.DataColumn>().Select(c => c.ColumnName);
+            var headers = table.Columns.Cast<DataColumn>().Select(c => c.ColumnName);
             output.AppendLine(string.Join("\t", headers));
             
             // Add rows (limited by maxRows)
@@ -186,6 +199,8 @@ public class SqlServerPlugin : IAgentPlugin
                 output.AppendLine($"... ({table.Rows.Count - maxRows} more rows)");
 
             _healthMetrics["LastQueryRowCount"] = table.Rows.Count;
+            _healthMetrics["LastQueryExecutionTime"] = DateTime.UtcNow;
+            
             return output.ToString();
         }
         catch (Exception ex)
@@ -231,6 +246,181 @@ public class SqlServerPlugin : IAgentPlugin
         }
     }
 
+    [KernelFunction]
+    [Description("Execute stored procedure with parameters using SqlCommand")]
+    public async Task<string> ExecuteStoredProcedure(
+        [Description("Stored procedure name")] string procedureName,
+        [Description("Parameters as JSON object (e.g., {\"@param1\": \"value1\", \"@param2\": 123})")] string? parameters = null,
+        [Description("Command timeout in seconds")] int timeoutSeconds = 30)
+    {
+        try
+        {
+            if (!_configuration!.SqlServer.QueryExecution.Safety.AllowDataModification)
+            {
+                return "Error: Stored procedure execution is not allowed in current configuration";
+            }
+
+            using var connection = new SqlConnection(_connectionString);
+            await connection.OpenAsync();
+            
+            using var command = new SqlCommand(procedureName, connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.CommandTimeout = timeoutSeconds;
+            
+            // Add parameters if provided
+            if (!string.IsNullOrEmpty(parameters))
+            {
+                var paramDict = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(parameters);
+                if (paramDict != null)
+                {
+                    foreach (var param in paramDict)
+                    {
+                        command.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                    }
+                }
+            }
+            
+            using var adapter = new SqlDataAdapter(command);
+            var dataSet = new DataSet();
+            adapter.Fill(dataSet);
+            
+            var output = new System.Text.StringBuilder();
+            output.AppendLine($"Stored procedure '{procedureName}' executed successfully");
+            
+            if (dataSet.Tables.Count > 0)
+            {
+                var table = dataSet.Tables[0];
+                output.AppendLine($"Returned {table.Rows.Count} rows");
+                
+                if (table.Rows.Count > 0)
+                {
+                    // Add column headers
+                    var headers = table.Columns.Cast<DataColumn>().Select(c => c.ColumnName);
+                    output.AppendLine(string.Join("\t", headers));
+                    
+                    // Add rows (limit to 50 for procedures)
+                    var rowCount = Math.Min(table.Rows.Count, 50);
+                    for (int i = 0; i < rowCount; i++)
+                    {
+                        var row = table.Rows[i];
+                        var values = row.ItemArray.Select(field => field?.ToString() ?? "NULL");
+                        output.AppendLine(string.Join("\t", values));
+                    }
+                    
+                    if (table.Rows.Count > 50)
+                        output.AppendLine($"... ({table.Rows.Count - 50} more rows)");
+                }
+            }
+            
+            // Get output parameters
+            foreach (SqlParameter param in command.Parameters)
+            {
+                if (param.Direction == ParameterDirection.Output || param.Direction == ParameterDirection.InputOutput)
+                {
+                    output.AppendLine($"Output parameter {param.ParameterName}: {param.Value}");
+                }
+            }
+            
+            _healthMetrics["LastStoredProcedureExecution"] = DateTime.UtcNow;
+            return output.ToString();
+        }
+        catch (Exception ex)
+        {
+            return $"Stored procedure execution error: {ex.Message}";
+        }
+    }
+
+    [KernelFunction]
+    [Description("Execute SQL script with multiple statements using SqlCommand")]
+    public async Task<string> ExecuteSqlScript(
+        [Description("SQL script containing multiple statements")] string script,
+        [Description("Command timeout in seconds")] int timeoutSeconds = 60)
+    {
+        try
+        {
+            if (!_configuration!.SqlServer.QueryExecution.Safety.AllowDataModification && 
+                HasDataModification(script))
+            {
+                return "Error: Scripts with data modification are not allowed in current configuration";
+            }
+
+            using var connection = new SqlConnection(_connectionString);
+            await connection.OpenAsync();
+            
+            var results = new System.Text.StringBuilder();
+            var statements = SplitSqlScript(script);
+            
+            results.AppendLine($"Executing script with {statements.Count} statements...");
+            results.AppendLine();
+            
+            int executedCount = 0;
+            
+            foreach (var statement in statements)
+            {
+                if (string.IsNullOrWhiteSpace(statement))
+                    continue;
+                    
+                try
+                {
+                    using var command = new SqlCommand(statement, connection);
+                    command.CommandTimeout = timeoutSeconds;
+                    
+                    var rowsAffected = await command.ExecuteNonQueryAsync();
+                    executedCount++;
+                    
+                    results.AppendLine($"Statement {executedCount}: {rowsAffected} rows affected");
+                }
+                catch (Exception statementEx)
+                {
+                    results.AppendLine($"Statement {executedCount + 1} failed: {statementEx.Message}");
+                    results.AppendLine($"Failed statement: {statement.Substring(0, Math.Min(100, statement.Length))}...");
+                    break; // Stop on first error
+                }
+            }
+            
+            _healthMetrics["LastScriptExecution"] = DateTime.UtcNow;
+            _healthMetrics["LastScriptStatementCount"] = executedCount;
+            
+            return results.ToString();
+        }
+        catch (Exception ex)
+        {
+            return $"Script execution error: {ex.Message}";
+        }
+    }
+
+    [KernelFunction]
+    [Description("Execute single SQL command (INSERT, UPDATE, DELETE) and return affected rows")]
+    public async Task<string> ExecuteSqlCommand(
+        [Description("SQL command to execute")] string sql,
+        [Description("Command timeout in seconds")] int timeoutSeconds = 30)
+    {
+        try
+        {
+            if (!_configuration!.SqlServer.QueryExecution.Safety.AllowDataModification)
+            {
+                return "Error: Data modification commands are not allowed in current configuration";
+            }
+
+            using var connection = new SqlConnection(_connectionString);
+            await connection.OpenAsync();
+            
+            using var command = new SqlCommand(sql, connection);
+            command.CommandTimeout = timeoutSeconds;
+            
+            var rowsAffected = await command.ExecuteNonQueryAsync();
+            
+            _healthMetrics["LastCommandExecution"] = DateTime.UtcNow;
+            _healthMetrics["LastCommandRowsAffected"] = rowsAffected;
+            
+            return $"Command executed successfully. {rowsAffected} rows affected.";
+        }
+        catch (Exception ex)
+        {
+            return $"Command execution error: {ex.Message}";
+        }
+    }
+
     #endregion
 
     #region Helper Methods
@@ -264,12 +454,72 @@ public class SqlServerPlugin : IAgentPlugin
 
     private static bool HasDataModification(string sql)
     {
-        var modificationKeywords = new[] { "insert", "update", "delete", "drop", "alter", "create", "truncate" };
+        var modificationKeywords = new[] { "insert", "update", "delete", "drop", "alter", "create", "truncate", "merge" };
         var lowerSql = sql.ToLowerInvariant().Trim();
         
         return modificationKeywords.Any(keyword => 
             lowerSql.StartsWith(keyword + " ") || 
             lowerSql.Contains(" " + keyword + " "));
+    }
+
+    private static List<string> SplitSqlScript(string script)
+    {
+        var statements = new List<string>();
+        var lines = script.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+        var currentStatement = new System.Text.StringBuilder();
+        var inBlockComment = false;
+        
+        foreach (var line in lines)
+        {
+            var trimmedLine = line.Trim();
+            
+            // Handle block comments
+            if (trimmedLine.StartsWith("/*"))
+            {
+                inBlockComment = true;
+            }
+            if (trimmedLine.EndsWith("*/"))
+            {
+                inBlockComment = false;
+                continue;
+            }
+            if (inBlockComment)
+            {
+                continue;
+            }
+            
+            // Skip line comments and empty lines
+            if (string.IsNullOrEmpty(trimmedLine) || trimmedLine.StartsWith("--"))
+                continue;
+            
+            // Check for GO statement (batch separator)
+            if (trimmedLine.Equals("GO", StringComparison.OrdinalIgnoreCase))
+            {
+                if (currentStatement.Length > 0)
+                {
+                    statements.Add(currentStatement.ToString().Trim());
+                    currentStatement.Clear();
+                }
+                continue;
+            }
+            
+            currentStatement.AppendLine(line);
+            
+            // Check for statement terminator (semicolon at end of line)
+            if (trimmedLine.EndsWith(";"))
+            {
+                statements.Add(currentStatement.ToString().Trim());
+                currentStatement.Clear();
+            }
+        }
+        
+        // Add any remaining statement
+        if (currentStatement.Length > 0)
+        {
+            statements.Add(currentStatement.ToString().Trim());
+        }
+        
+        return statements.Where(s => !string.IsNullOrWhiteSpace(s)).ToList();
     }
 
     #endregion

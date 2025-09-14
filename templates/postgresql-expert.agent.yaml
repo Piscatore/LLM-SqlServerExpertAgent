@@ -1,0 +1,104 @@
+# PostgreSQL Expert Agent Template  
+# Demonstrates how to create a PostgreSQL expert using declarative templates
+# Shows the power of template inheritance and skill composition
+
+name: "PostgreSqlExpertAgent"
+version: "1.0.0"
+description: "PostgreSQL expert agent with Npgsql integration and PostgreSQL-specific capabilities"
+baseTemplate: "DatabaseExpertAgent"
+
+personality:
+  responseStyle: "expert_concise"
+  expertiseLevel: "senior"
+  authoritative: true
+  proactiveOptimization: true
+  customAttributes:
+    postgresqlSpecialist: true
+    openSourceExpertise: true
+
+requiredSkills:
+  - name: "PostgreSqlSkill"
+    minVersion: "1.0.0"
+    priority: "Critical"
+    configuration:
+      useNpgsql: true
+      enablePlPgSql: true
+      syntaxValidation: true
+    dependencies:
+      - "DatabaseConnectionSkill"
+
+  - name: "PostgreSqlSyntaxValidationSkill"
+    minVersion: "1.0.0" 
+    priority: "High"
+    configuration:
+      postgresqlVersion: "15"
+      strictMode: true
+
+optionalSkills:
+  - name: "GitVersioningSkill"
+    minVersion: "1.0.0"
+    priority: "High"
+    configuration:
+      schemaTracking: true
+      migrationGeneration: true
+      
+  - name: "PostgreSqlPerformanceSkill"
+    minVersion: "1.0.0"
+    priority: "Normal"
+    configuration:
+      explainAnalyze: true
+      vacuumAnalysis: true
+      indexOptimization: true
+
+infrastructure:
+  databases:
+    - name: "postgresql_primary"
+      type: "PostgreSQL"
+      purpose: "primary"
+      minVersion: "13"
+      required: true
+      configuration:
+        sslMode: "Prefer"
+        
+    - name: "postgresql_test"
+      type: "PostgreSQL" 
+      purpose: "testing"
+      required: false
+
+  services:
+    - name: "PostgreSqlDriver"
+      type: "NuGet"
+      purpose: "database_operations"
+      required: true
+      configuration:
+        package: "Npgsql"
+        version: "8.0.0"
+
+defaultConfiguration:
+  postgresql:
+    connectionStrings:
+      default: "Host=localhost;Database=postgres;Username=postgres;Password=;"
+    defaultDatabase: "postgres"
+    queryExecution:
+      safety:
+        allowDataModification: false
+        maxRowsReturned: 1000
+        defaultTimeout: 30
+        prohibitedKeywords:
+          - "pg_read_file"
+          - "pg_write_file" 
+          - "copy"
+
+  performance:
+    responseTargets:
+      syntax_validation: 100
+      schema_introspection: 400
+      query_optimization: 800
+      complex_analysis: 2500
+
+validationRules:
+  - name: "PostgreSqlConnection"
+    description: "Validate PostgreSQL connection is available"
+    validationExpression: "HasPostgreSqlConnection"
+    errorMessage: "PostgreSQL connection not available"
+    isCritical: true

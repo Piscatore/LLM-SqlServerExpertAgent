@@ -12,7 +12,7 @@ namespace SqlServerExpertAgent.Tests.Configuration;
 public class ConfigurationManagerTests : IDisposable
 {
     private readonly string _testDirectory;
-    private readonly ConfigurationManager _configManager;
+    private readonly SqlServerExpertAgent.Configuration.ConfigurationManager _configManager;
     private readonly IConfiguration _configuration;
 
     public ConfigurationManagerTests()

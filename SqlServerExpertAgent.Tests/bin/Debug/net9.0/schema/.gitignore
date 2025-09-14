@@ -1,0 +1,7 @@
+# Temporary files
+*.tmp
+*.bak
+*.log
+
+# Environment-specific files
+local-config.json

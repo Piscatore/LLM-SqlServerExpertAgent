@@ -1,0 +1,122 @@
+# SQL Server Expert Agent Template
+# Specialized template for SQL Server database operations
+# Inherits from DatabaseExpertAgent base template
+
+name: "SqlServerExpertAgent"
+version: "1.0.0"
+description: "Specialized SQL Server expert agent with SMO integration and comprehensive SQL Server capabilities"
+baseTemplate: "DatabaseExpertAgent"
+
+personality:
+  responseStyle: "expert_concise"
+  expertiseLevel: "architect"
+  authoritative: true
+  proactiveOptimization: true
+  customAttributes:
+    sqlServerSpecialist: true
+    smoExpertise: true
+
+requiredSkills:
+  - name: "SqlServerSkill"
+    minVersion: "1.0.0"
+    priority: "Critical"
+    configuration:
+      useSMO: true
+      enableSqlCommand: true
+      syntaxValidation: true
+    dependencies:
+      - "DatabaseConnectionSkill"
+
+  - name: "SqlSyntaxValidationSkill" 
+    minVersion: "1.0.0"
+    priority: "High"
+    configuration:
+      sqlServerVersion: "2022"
+      strictMode: true
+
+optionalSkills:
+  - name: "GitVersioningSkill"
+    minVersion: "1.0.0"
+    priority: "High"
+    configuration:
+      schemaTracking: true
+      migrationGeneration: true
+
+  - name: "QueryOptimizationSkill"
+    minVersion: "1.0.0"
+    priority: "Normal"
+    configuration:
+      executionPlanAnalysis: true
+      indexRecommendations: true
+
+infrastructure:
+  databases:
+    - name: "sqlserver_primary"
+      type: "SqlServer"
+      purpose: "primary"
+      minVersion: "2017"
+      required: true
+      configuration:
+        integratedSecurity: true
+        trustServerCertificate: true
+        
+    - name: "sqlserver_test"
+      type: "SqlServer"
+      purpose: "testing"
+      required: false
+      configuration:
+        isolationLevel: "ReadUncommitted"
+
+  services:
+    - name: "SqlServerManagementObjects"
+      type: "COM"
+      purpose: "schema_operations"
+      required: true
+      configuration:
+        version: "172.76.0"
+
+defaultConfiguration:
+  sqlServer:
+    connectionStrings:
+      default: "Server=(localdb)\\MSSQLLocalDB;Database=master;Integrated Security=true;TrustServerCertificate=true;"
+    defaultDatabase: "master"
+    queryExecution:
+      safety:
+        allowDataModification: false
+        maxRowsReturned: 1000
+        defaultTimeout: 30
+        prohibitedKeywords:
+          - "xp_cmdshell"
+          - "sp_configure"
+          - "openrowset"
+          - "opendatasource"
+
+  performance:
+    responseTargets:
+      syntax_validation: 100
+      schema_introspection: 500
+      query_optimization: 1000
+      complex_analysis: 3000
+
+  plugins:
+    pluginDirectories:
+      - "plugins"
+      - "skills"
+    enableHotReload: true
+    pluginSettings:
+      SqlServerSkill:
+        enabled: true
+        priority: 100
+
+validationRules:
+  - name: "SqlServerConnection"
+    description: "Validate SQL Server connection is available"
+    validationExpression: "HasSqlServerConnection"
+    errorMessage: "SQL Server connection not available"
+    isCritical: true
+    
+  - name: "SMOAvailability"
+    description: "Validate SQL Server Management Objects are available"
+    validationExpression: "HasSMO"
+    errorMessage: "SQL Server Management Objects not available"
+    isCritical: true

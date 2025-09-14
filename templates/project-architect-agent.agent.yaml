@@ -1,0 +1,114 @@
+# Project Architect Agent Template
+# Coordinates planning phase with multiple specialist agents
+# Demonstrates your vision of "virtual planning agents, Architects, UI/UX experts"
+
+name: "ProjectArchitectAgent"
+version: "1.0.0"
+description: "Senior architect agent that coordinates project planning with specialist teams"
+
+personality:
+  responseStyle: "enterprise_formal"
+  expertiseLevel: "architect"
+  authoritative: true
+  proactiveOptimization: true
+  customAttributes:
+    leadership: true
+    strategicPlanning: true
+    crossFunctionalCoordination: true
+
+requiredSkills:
+  - name: "ProjectPlanningSkill"
+    minVersion: "1.0.0"
+    priority: "Critical"
+    configuration:
+      planningMethodology: "agile"
+      riskAssessment: true
+      resourcePlanning: true
+
+  - name: "ArchitecturalDesignSkill"
+    minVersion: "1.0.0"
+    priority: "Critical"
+    configuration:
+      designPatterns: true
+      systemModeling: true
+      technologySelection: true
+
+  - name: "A2ACommunicationSkill"
+    minVersion: "1.0.0"
+    priority: "Critical"
+    configuration:
+      multiAgentOrchestration: true
+      workflowManagement: true
+      delegationCapabilities: true
+
+optionalSkills:
+  - name: "DocumentationSkill"
+    minVersion: "1.0.0"
+    priority: "High"
+    configuration:
+      technicalSpecs: true
+      architecturalDiagrams: true
+      
+  - name: "StakeholderCommunicationSkill"
+    minVersion: "1.0.0"
+    priority: "High"
+
+infrastructure:
+  services:
+    - name: "A2ADiscoveryService"
+      type: "REST"
+      purpose: "agent_discovery"
+      required: true
+      
+    - name: "CollaborationPlatform"
+      type: "WebSocket"
+      purpose: "real_time_coordination"
+      required: false
+
+  resources:
+    minMemoryMB: 1024
+    maxMemoryMB: 4096
+    minCpuCores: 2
+    maxCpuCores: 4
+
+defaultConfiguration:
+  a2a:
+    enableMultiAgentWorkflows: true
+    maxConcurrentDelegations: 5
+    collaborationTimeout: 300
+    
+  planning:
+    iterativeRefinement: true
+    stakeholderValidation: true
+    riskMitigation: true
+    
+  coordination:
+    teamComposition:
+      - role: "DatabaseArchitect"
+        agentType: "SqlServerExpertAgent"
+        required: true
+      - role: "UIUXDesigner" 
+        agentType: "UIUXExpertAgent"
+        required: true
+      - role: "ProjectManager"
+        agentType: "ProjectManagerAgent" 
+        required: true
+      - role: "FinancialAnalyst"
+        agentType: "FinancialExpertAgent"
+        required: false
+      - role: "SecurityExpert"
+        agentType: "SecurityExpertAgent"
+        required: true
+
+validationRules:
+  - name: "A2AConnectivity"
+    description: "Validate A2A network connectivity for multi-agent coordination"
+    validationExpression: "HasA2AConnectivity"
+    errorMessage: "A2A network connectivity required for multi-agent workflows"
+    isCritical: true
+    
+  - name: "SpecialistTeamAvailability"
+    description: "Ensure required specialist agents are available in the network"
+    validationExpression: "HasRequiredSpecialists"
+    errorMessage: "Required specialist agents not available in network"
+    isCritical: true

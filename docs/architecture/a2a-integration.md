@@ -1,33 +1,85 @@
-# Agent-Protocol (A2A) Integration
+# RAID Platform A2A Integration
 
 ## Overview
 
-The SqlServerExpertAgent project now includes full **Agent-to-Agent (A2A) protocol integration**, enabling standardized multi-agent communication and collaboration. This implements your vision of "virtual planning agents, Architects, UI/UX experts, project managers" working together as coordinated teams.
+The RAID Platform includes comprehensive **Agent-to-Agent (A2A) protocol integration**, enabling standardized multi-agent communication and collaboration across the entire platform ecosystem. This enables specialized agents to work together seamlessly on complex, multi-domain problems.
 
 ## Architecture Overview
 
 ```mermaid
 graph TB
-    subgraph "A2A Network"
-        PA[Project Architect Agent]
-        SA[SQL Server Expert Agent]
-        UA[UI/UX Expert Agent] 
-        PM[Project Manager Agent]
-        FA[Financial Expert Agent]
-        SEC[Security Expert Agent]
+    subgraph "RAID Platform A2A Network"
+        subgraph "Infrastructure Agents"
+            MEMORY[Memory Agent<br/>Context & Knowledge]
+            SECURITY[Security Agent<br/>Auth & Audit]
+            ANALYTICS[Analytics Agent<br/>Monitoring]
+            ORCHESTRATOR[Orchestrator Agent<br/>Workflows]
+        end
+
+        subgraph "Specialist Agents"
+            DATABASE[Database Agent<br/>SQL Server Expert]
+            CODE[Code Review Agent<br/>Static Analysis]
+            API[API Design Agent<br/>RESTful Services]
+            DEVOPS[DevOps Agent<br/>CI/CD & Infrastructure]
+            UI[UI/UX Agent<br/>Interface Design]
+            PROJECT[Project Manager Agent<br/>Planning & Coordination]
+        end
+
+        subgraph "A2A Communication Layer"
+            DISCOVERY[Agent Discovery Service<br/>Registration & Health]
+            ROUTING[Message Routing<br/>Request Distribution]
+            PROTOCOL[A2A Protocol<br/>HTTPS/JSON-RPC]
+            CIRCUIT[Circuit Breakers<br/>Fault Tolerance]
+        end
+
+        subgraph "Multi-Agent Workflows"
+            WORKFLOW[Workflow Engine<br/>Orchestration]
+            STEPS[Workflow Steps<br/>Task Coordination]
+            DEPENDENCIES[Dependency Resolution<br/>Execution Order]
+            MONITORING[Workflow Monitoring<br/>Progress Tracking]
+        end
     end
-    
-    subgraph "A2A Communication Layer"
-        A2AMsg[A2A Messages]
-        A2ATransport[A2A Transport - HTTPS/JSON-RPC]
-        A2AComm[A2A Communication Manager]
-        Discovery[Agent Discovery Service]
-    end
-    
-    subgraph "Multi-Agent Workflows"
-        Workflow[Workflow Engine]
-        Steps[Workflow Steps]
-        Dependencies[Dependency Resolution]
+
+    %% Agent Registration
+    MEMORY --> DISCOVERY
+    SECURITY --> DISCOVERY
+    ANALYTICS --> DISCOVERY
+    ORCHESTRATOR --> DISCOVERY
+    DATABASE --> DISCOVERY
+    CODE --> DISCOVERY
+    API --> DISCOVERY
+    DEVOPS --> DISCOVERY
+    UI --> DISCOVERY
+    PROJECT --> DISCOVERY
+
+    %% Communication Flow
+    DISCOVERY --> ROUTING
+    ROUTING --> PROTOCOL
+    PROTOCOL --> CIRCUIT
+
+    %% Workflow Management
+    ORCHESTRATOR --> WORKFLOW
+    WORKFLOW --> STEPS
+    STEPS --> DEPENDENCIES
+    WORKFLOW --> MONITORING
+
+    %% Cross-agent Communication
+    DATABASE --> MEMORY
+    CODE --> MEMORY
+    API --> MEMORY
+    PROJECT --> ORCHESTRATOR
+    UI --> ANALYTICS
+
+    %% Styling
+    classDef infrastructure fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef specialist fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef communication fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    classDef workflow fill:#fff3e0,stroke:#e65100,stroke-width:2px
+
+    class MEMORY,SECURITY,ANALYTICS,ORCHESTRATOR infrastructure
+    class DATABASE,CODE,API,DEVOPS,UI,PROJECT specialist
+    class DISCOVERY,ROUTING,PROTOCOL,CIRCUIT communication
+    class WORKFLOW,STEPS,DEPENDENCIES,MONITORING workflow
         Coordination[Multi-Agent Coordination]
     end
     

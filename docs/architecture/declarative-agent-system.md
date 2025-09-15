@@ -1,41 +1,84 @@
-# Declarative Agent System Architecture
+# RAID Platform Declarative Agent System Architecture
 
 ## Overview
 
-The SqlServerExpertAgent project now includes a complete **Declarative Agent Template System** that enables creating specialized agents entirely through YAML/JSON configuration. This represents a major architectural evolution from hardcoded agents to configurable, template-based agent composition.
+The RAID Platform includes a comprehensive **Declarative Agent Template System** that enables creating specialized agents entirely through YAML/JSON configuration. This represents a major architectural evolution in the platform, enabling rapid agent development and deployment across the multi-agent ecosystem.
 
 ## Architecture Components
 
 ```mermaid
 graph TB
-    subgraph "Template System"
-        AT[AgentTemplate] --> AF[DeclarativeAgentFactory]
-        AF --> GA[GenericExpertAgent]
-        SR[SkillRegistry] --> AF
-        YT[YAML Templates] --> AF
-        JT[JSON Templates] --> AF
+    subgraph "RAID Platform Declarative System"
+        subgraph "Template System"
+            AT[Agent Template<br/>• YAML/JSON Configuration<br/>• Inheritance Rules<br/>• Validation Schema]
+            AF[Declarative Agent Factory<br/>• Template Loading<br/>• Agent Instantiation<br/>• Dependency Resolution]
+            GA[Generic Expert Agent<br/>• Runtime Core<br/>• Skill Integration<br/>• A2A Communication]
+        end
+
+        subgraph "Skill Registry"
+            SR[Skill Registry<br/>• Dynamic Discovery<br/>• Version Management<br/>• Dependency Validation]
+            ISkill[ISkill Plugin Interface<br/>• Capability Declaration<br/>• Configuration Schema<br/>• Execution Framework]
+        end
+
+        subgraph "Infrastructure Integration"
+            A2A[A2A Communication<br/>• Agent Discovery<br/>• Message Routing<br/>• Protocol Handling]
+            MEMORY[Memory Integration<br/>• Context Storage<br/>• Knowledge Sharing<br/>• Vector Search]
+            SK[Semantic Kernel<br/>• Function Registration<br/>• AI Orchestration<br/>• Plugin Management]
+        end
+
+        subgraph "Specialized Skills"
+            SS[SQL Server Skill<br/>• SMO Integration<br/>• Query Validation<br/>• Schema Operations]
+            GS[Git Versioning Skill<br/>• Repository Management<br/>• Change Tracking<br/>• Migration Support]
+            PS[PostgreSQL Skill<br/>• Connection Management<br/>• Query Optimization<br/>• Advanced Features]
+            CS[Code Review Skill<br/>• Static Analysis<br/>• Security Scanning<br/>• Best Practices]
+        end
+
+        subgraph "Template Configuration"
+            BASE[Base Agent Template<br/>database-expert-base.agent.yaml]
+            SQL_TEMPLATE[SQL Server Template<br/>sqlserver-expert.agent.yaml]
+            PG_TEMPLATE[PostgreSQL Template<br/>postgresql-expert.agent.yaml]
+            CODE_TEMPLATE[Code Review Template<br/>code-review.agent.yaml]
+        end
     end
-    
-    subgraph "Skill System"
-        ISkill[ISkillPlugin] --> SS[SqlServerSkill]
-        ISkill --> GS[GitVersioningSkill]
-        ISkill --> PS[PostgreSqlSkill]
-        SR --> ISkill
-    end
-    
-    subgraph "Agent Runtime"
-        GA --> SK[Semantic Kernel]
-        GA --> ISkill
-        SK --> Functions[Kernel Functions]
-    end
-    
-    subgraph "Configuration"
-        BaseTemplate[database-expert-base.agent.yaml]
-        SqlTemplate[sqlserver-expert.agent.yaml]
-        PgTemplate[postgresql-expert.agent.yaml]
-        BaseTemplate --> SqlTemplate
-        BaseTemplate --> PgTemplate
-    end
+
+    %% Template system connections
+    AT --> AF
+    AF --> GA
+    SR --> AF
+
+    %% Skill system connections
+    SR --> ISkill
+    ISkill --> SS
+    ISkill --> GS
+    ISkill --> PS
+    ISkill --> CS
+
+    %% Runtime integration
+    GA --> SK
+    GA --> A2A
+    GA --> MEMORY
+    GA --> ISkill
+
+    %% Template inheritance
+    BASE --> SQL_TEMPLATE
+    BASE --> PG_TEMPLATE
+    BASE --> CODE_TEMPLATE
+
+    %% Infrastructure connections
+    SK --> Functions[Kernel Functions]
+    A2A --> Discovery[Agent Discovery]
+    MEMORY --> Context[Context Management]
+
+    %% Styling
+    classDef template fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef skill fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef infrastructure fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef config fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+
+    class AT,AF,GA template
+    class SR,ISkill,SS,GS,PS,CS skill
+    class A2A,MEMORY,SK infrastructure
+    class BASE,SQL_TEMPLATE,PG_TEMPLATE,CODE_TEMPLATE config
 ```
 
 ## Key Features

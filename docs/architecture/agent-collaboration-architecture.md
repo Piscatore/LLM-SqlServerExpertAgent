@@ -1,66 +1,103 @@
-# Agent Collaboration Architecture
-*Version Control and Domain Agent Design*
+# RAID Platform Agent Collaboration Architecture
+*Multi-Agent Communication and Domain Specialization Design*
 
 ## Overview
 
-The SQL Server Expert Agent system uses a hybrid architecture that balances **Single Responsibility Principle** with **Domain Expertise**, enabling scalable collaboration between specialized agents while avoiding code duplication.
+The RAID Platform uses a sophisticated multi-agent architecture that enables specialized agents to collaborate seamlessly while maintaining clear domain boundaries. The platform balances **Domain Expertise** with **Shared Infrastructure**, enabling scalable collaboration between Infrastructure and Specialist agents.
 
 ## Architecture Diagrams
 
-### Current Architecture: Hybrid Approach
+### RAID Platform Multi-Agent Architecture
 
-```
-┌─────────────────────────────────────────────┐
-│           VersionControlCore                │
-│         (Shared Git Library)                │
-├─────────────────────────────────────────────┤
-│ • Git command execution                     │
-│ • Repository management                     │
-│ • Commit/branch/diff operations             │
-│ • Generic file versioning                  │
-│ • Health monitoring                         │
-└─────────────────────────────────────────────┘
-                      ▲
-          ┌───────────┴───────────┐
-          │                       │
-┌─────────────────┐    ┌─────────────────────┐
-│ DatabaseVersion │    │  FileVersionAgent   │
-│ Agent           │    │                     │
-├─────────────────┤    ├─────────────────────┤
-│ • Schema extract│    │ • Source tracking   │
-│ • DB-aware Git  │    │ • Doc versioning    │
-│ • Migrations    │    │ • Config files      │
-│ • Schema diffs  │    │ • Standard workflows│
-└─────────────────┘    └─────────────────────┘
+```mermaid
+graph TB
+    subgraph "RAID Platform Agent Ecosystem"
+        subgraph "Shared Infrastructure Layer"
+            VC[Version Control Core<br/>• Git Operations<br/>• Repository Management<br/>• Change Tracking]
+            MEMORY[Memory Agent<br/>• Context Management<br/>• Knowledge Sharing<br/>• Vector Search]
+            A2A[A2A Communication<br/>• Agent Discovery<br/>• Message Routing<br/>• Circuit Breakers]
+        end
+
+        subgraph "Infrastructure Agents"
+            SECURITY[Security Agent<br/>• Authentication<br/>• Authorization<br/>• Audit Trails]
+            ANALYTICS[Analytics Agent<br/>• Performance Monitoring<br/>• Metrics Collection<br/>• Optimization]
+            ORCHESTRATOR[Orchestrator Agent<br/>• Workflow Coordination<br/>• Task Delegation<br/>• Load Balancing]
+        end
+
+        subgraph "Specialist Agents"
+            DATABASE[Database Agent<br/>• SQL Server Expert<br/>• Schema Operations<br/>• Performance Tuning]
+            VERSION[Version Control Agent<br/>• Schema Versioning<br/>• Migration Management<br/>• Change Tracking]
+            CODE[Code Review Agent<br/>• Static Analysis<br/>• Security Scanning<br/>• Best Practices]
+        end
+
+        subgraph "Storage Infrastructure"
+            REDIS[Redis Cache<br/>Session Storage]
+            SQL[SQL Server<br/>Persistent Data]
+            VECTOR[Vector Store<br/>Semantic Search]
+        end
+    end
+
+    %% Infrastructure connections
+    DATABASE --> A2A
+    VERSION --> A2A
+    CODE --> A2A
+    SECURITY --> A2A
+    ANALYTICS --> A2A
+    ORCHESTRATOR --> A2A
+
+    %% Shared services
+    DATABASE --> MEMORY
+    VERSION --> VC
+    CODE --> MEMORY
+    SECURITY --> MEMORY
+
+    %% Storage connections
+    MEMORY --> REDIS
+    MEMORY --> SQL
+    MEMORY --> VECTOR
+    DATABASE --> SQL
+    VERSION --> VC
+
+    %% Styling
+    classDef infrastructure fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef agents fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef shared fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef storage fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+
+    class SECURITY,ANALYTICS,ORCHESTRATOR infrastructure
+    class DATABASE,VERSION,CODE agents
+    class VC,MEMORY,A2A shared
+    class REDIS,SQL,VECTOR storage
 ```
 
-### Plugin Interaction Flow
+### Agent Interaction Workflow
 
-```
-User Request: "Create schema snapshot"
-         │
-         ▼
-┌─────────────────────┐
-│ DatabaseVersion     │──┐
-│ Agent               │  │ 1. Extract Schema
-│                     │◄─┘    (SMO)
-└─────────────────────┘
-         │
-         ▼ 2. Version Control Operations
-┌─────────────────────┐
-│ VersionControlCore  │──┐
-│                     │  │ 3. Git Commands
-│ • Add files         │◄─┘    (Process)
-│ • Commit changes    │
-│ • Generate diff     │
-└─────────────────────┘
-         │
-         ▼ 4. Return Result
-┌─────────────────────┐
-│ DatabaseVersion     │
-│ Agent               │
-│ (Response)          │
-└─────────────────────┘
+```mermaid
+sequenceDiagram
+    participant User
+    participant DB as Database Agent
+    participant MEM as Memory Agent
+    participant VC as Version Control Agent
+    participant A2A as A2A Communication
+
+    User->>DB: "Create schema snapshot"
+
+    Note over DB: 1. Extract Schema (SMO)
+    DB->>DB: Extract database metadata
+
+    Note over DB,MEM: 2. Store Context
+    DB->>A2A: Find Memory Agent
+    A2A->>MEM: Store schema context
+    MEM-->>DB: Context stored
+
+    Note over DB,VC: 3. Version Control
+    DB->>A2A: Find Version Control Agent
+    A2A->>VC: Create schema snapshot
+    VC->>VC: Git operations
+    VC-->>DB: Snapshot created
+
+    Note over DB: 4. Return Result
+    DB-->>User: Schema snapshot complete
 ```
 
 ## Design Principles

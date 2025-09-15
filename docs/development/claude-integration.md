@@ -1,10 +1,10 @@
-# CLAUDE.md - SQL Server Expert Agent
+# CLAUDE.md - RAID Platform Database Agent
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
 
-LLM-SqlServerExpertAgent is a specialized AI agent built with Microsoft Semantic Kernel that provides expert SQL Server assistance using SMO (SQL Server Management Objects). It features a highly configurable architecture with plugin separation for extensibility.
+The RAID Platform Database Agent is a specialized AI agent built with Microsoft Semantic Kernel that provides expert SQL Server assistance using SMO (SQL Server Management Objects). It's part of the larger RAID Platform multi-agent ecosystem and features a highly configurable architecture with plugin separation for extensibility.
 
 ## Key Architecture Components
 

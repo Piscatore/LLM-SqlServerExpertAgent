@@ -11,5 +11,4 @@ All facts in one place for lookups.
 ## User Manual
 Comprehensive usage manual with examples
 ## Cource material
-Deep knowledge book with exercises and deep insight education. Also covering introduction to "standards" related to LLM agentical designs and patterns. (Do outline and Plan for future) 
-Have you ran the 
+Deep knowledge book with exercises and deep insight education. Also covering introduction to "standards" related to LLM programming and agentical designs and patterns. (Do outline and Plan for future) 

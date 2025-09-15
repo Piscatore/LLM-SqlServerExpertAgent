@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SqlServerExpertAgent.Console")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2d81fb41bc3dbe38ee05537c8ac590f4d39d8f40")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ac5e88a5afe2603dc7fd11f4d5ab35f0172be08c")]
 [assembly: System.Reflection.AssemblyProductAttribute("SqlServerExpertAgent.Console")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SqlServerExpertAgent.Console")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

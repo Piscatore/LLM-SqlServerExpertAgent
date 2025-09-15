@@ -1,0 +1,124 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+
+# Infrastructure Agents (Phase 2)
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raid.Memory", "src\Infrastructure\Raid.Memory\Raid.Memory.csproj", "{A1B2C3D4-E5F6-7890-ABCD-123456789001}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raid.Security", "src\Infrastructure\Raid.Security\Raid.Security.csproj", "{A1B2C3D4-E5F6-7890-ABCD-123456789002}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raid.Orchestrator", "src\Infrastructure\Raid.Orchestrator\Raid.Orchestrator.csproj", "{A1B2C3D4-E5F6-7890-ABCD-123456789003}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raid.Analytics", "src\Infrastructure\Raid.Analytics\Raid.Analytics.csproj", "{A1B2C3D4-E5F6-7890-ABCD-123456789004}"
+EndProject
+
+# Specialist Agents
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raid.Agents.Database.Core", "src\Agents\Raid.Agents.Database\Raid.Agents.Database.Core\Raid.Agents.Database.Core.csproj", "{A1B2C3D4-E5F6-7890-ABCD-123456789010}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raid.Agents.Database.Console", "src\Agents\Raid.Agents.Database\Raid.Agents.Database.Console\Raid.Agents.Database.Console.csproj", "{A1B2C3D4-E5F6-7890-ABCD-123456789011}"
+EndProject
+
+# Common Libraries
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raid.Common", "src\Common\Raid.Common\Raid.Common.csproj", "{A1B2C3D4-E5F6-7890-ABCD-123456789020}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raid.A2A", "src\Common\Raid.A2A\Raid.A2A.csproj", "{A1B2C3D4-E5F6-7890-ABCD-123456789021}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raid.Templates", "src\Common\Raid.Templates\Raid.Templates.csproj", "{A1B2C3D4-E5F6-7890-ABCD-123456789022}"
+EndProject
+
+# Development Tools
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raid.Cli", "src\Tools\Raid.Cli\Raid.Cli.csproj", "{A1B2C3D4-E5F6-7890-ABCD-123456789030}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raid.DevKit", "src\Tools\Raid.DevKit\Raid.DevKit.csproj", "{A1B2C3D4-E5F6-7890-ABCD-123456789031}"
+EndProject
+
+# Tests
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raid.Agents.Database.Tests", "tests\Raid.Agents.Database.Tests\Raid.Agents.Database.Tests.csproj", "{A1B2C3D4-E5F6-7890-ABCD-123456789040}"
+EndProject
+
+# Solution Folders for Organization
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{F1F1F1F1-F1F1-F1F1-F1F1-F1F1F1F1F1F1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Agents", "Agents", "{F2F2F2F2-F2F2-F2F2-F2F2-F2F2F2F2F2F2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{F3F3F3F3-F3F3-F3F3-F3F3-F3F3F3F3F3F3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{F4F4F4F4-F4F4-F4F4-F4F4-F4F4F4F4F4F4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F5F5F5F5-F5F5-F5F5-F5F5-F5F5F5F5F5F5}"
+EndProject
+
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A1B2C3D4-E5F6-7890-ABCD-123456789001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789002}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789002}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789002}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789003}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789003}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789003}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789004}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789004}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789004}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789010}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789010}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789010}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789010}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789011}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789011}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789011}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789011}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789020}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789020}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789020}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789020}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789021}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789021}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789021}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789021}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789022}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789022}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789022}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789022}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789030}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789030}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789030}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789030}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789031}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789031}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789031}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789031}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789040}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789040}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789040}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-123456789040}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A1B2C3D4-E5F6-7890-ABCD-123456789001} = {F1F1F1F1-F1F1-F1F1-F1F1-F1F1F1F1F1F1}
+		{A1B2C3D4-E5F6-7890-ABCD-123456789002} = {F1F1F1F1-F1F1-F1F1-F1F1-F1F1F1F1F1F1}
+		{A1B2C3D4-E5F6-7890-ABCD-123456789003} = {F1F1F1F1-F1F1-F1F1-F1F1-F1F1F1F1F1F1}
+		{A1B2C3D4-E5F6-7890-ABCD-123456789004} = {F1F1F1F1-F1F1-F1F1-F1F1-F1F1F1F1F1F1}
+		{A1B2C3D4-E5F6-7890-ABCD-123456789010} = {F2F2F2F2-F2F2-F2F2-F2F2-F2F2F2F2F2F2}
+		{A1B2C3D4-E5F6-7890-ABCD-123456789011} = {F2F2F2F2-F2F2-F2F2-F2F2-F2F2F2F2F2F2}
+		{A1B2C3D4-E5F6-7890-ABCD-123456789020} = {F3F3F3F3-F3F3-F3F3-F3F3-F3F3F3F3F3F3}
+		{A1B2C3D4-E5F6-7890-ABCD-123456789021} = {F3F3F3F3-F3F3-F3F3-F3F3-F3F3F3F3F3F3}
+		{A1B2C3D4-E5F6-7890-ABCD-123456789022} = {F3F3F3F3-F3F3-F3F3-F3F3-F3F3F3F3F3F3}
+		{A1B2C3D4-E5F6-7890-ABCD-123456789030} = {F4F4F4F4-F4F4-F4F4-F4F4-F4F4F4F4F4F4}
+		{A1B2C3D4-E5F6-7890-ABCD-123456789031} = {F4F4F4F4-F4F4-F4F4-F4F4-F4F4F4F4F4F4}
+		{A1B2C3D4-E5F6-7890-ABCD-123456789040} = {F5F5F5F5-F5F5-F5F5-F5F5-F5F5F5F5F5F5}
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -12,7 +12,14 @@
       "Bash(echo:*)",
       "Bash(ALLOW_DATA_MODIFICATION=true dotnet run -- query \"CREATE TABLE Users (UserId INT IDENTITY(1,1) PRIMARY KEY, Username NVARCHAR(50) NOT NULL)\")",
       "Bash(git add:*)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(git commit:*)",
+      "Bash(mkdir:*)",
+      "Bash(mv:*)",
+      "Bash(find:*)",
+      "Bash(git mv:*)",
+      "Bash(cp:*)",
+      "Bash(dotnet clean:*)"
     ],
     "deny": [],
     "ask": []

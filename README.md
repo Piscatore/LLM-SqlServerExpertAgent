@@ -21,29 +21,29 @@ This agent was created to address specific quality control issues in SQL Server 
 │   (Interactive CLI Application)     │
 ├─────────────────────────────────────┤
 │ • Interactive shell interface       │
-│ • Direct command execution         │
-│ • Professional error handling      │
-│ • System.CommandLine integration   │
+│ • Direct command execution          │
+│ • Professional error handling       │
+│ • System.CommandLine integration    │
 └─────────────────────────────────────┘
                   ▼
 ┌─────────────────────────────────────┐
 │     SqlServerExpertAgent.Core       │
-│      (Shared Library & Engine)     │
+│      (Shared Library & Engine)      │
 ├─────────────────────────────────────┤
-│ • Microsoft Semantic Kernel        │
-│ • Plugin Architecture              │
-│ • Configuration Management         │
-│ • SMO Integration                  │
+│ • Microsoft Semantic Kernel         │
+│ • Plugin Architecture               │
+│ • Configuration Management          │
+│ • SMO Integration                   │
 └─────────────────────────────────────┘
                   ▼
 ┌─────────────────────────────────────┐
 │         SqlServerPlugin             │
-│    (Built-in SMO Integration)      │
+│    (Built-in SMO Integration)       │
 ├─────────────────────────────────────┤
-│ • SQL Server Management Objects    │
-│ • Syntax validation & execution    │
-│ • Schema introspection            │
-│ • Performance analysis            │
+│ • SQL Server Management Objects     │
+│ • Syntax validation & execution     │
+│ • Schema introspection              │
+│ • Performance analysis              │
 └─────────────────────────────────────┘
 ```
 

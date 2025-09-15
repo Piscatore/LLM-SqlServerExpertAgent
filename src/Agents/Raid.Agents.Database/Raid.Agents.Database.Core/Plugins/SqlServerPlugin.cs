@@ -62,19 +62,19 @@ public class SqlServerPlugin : IAgentPlugin
 
     [KernelFunction]
     [Description("Validate SQL syntax using SMO parser without execution")]
-    public async Task<string> ValidateSqlSyntax(
+    public Task<string> ValidateSqlSyntax(
         [Description("SQL query or statement to validate")] string sql,
         [Description("Check for potential security issues")] bool checkSecurity = true)
     {
         try
         {
             if (string.IsNullOrWhiteSpace(sql))
-                return "Error: SQL statement is empty";
+                return Task.FromResult("Error: SQL statement is empty");
 
             // Basic SQL injection detection
             if (checkSecurity && HasSecurityConcerns(sql))
             {
-                return "Security Warning: SQL contains potentially dangerous patterns";
+                return Task.FromResult("Security Warning: SQL contains potentially dangerous patterns");
             }
 
             // Use SMO to parse SQL syntax
@@ -90,17 +90,17 @@ public class SqlServerPlugin : IAgentPlugin
             var validationTime = DateTime.UtcNow - startTime;
             _healthMetrics["LastValidationTimeMs"] = validationTime.TotalMilliseconds;
 
-            return $"SQL syntax is valid (validated in {validationTime.TotalMilliseconds:F1}ms)";
+            return Task.FromResult($"SQL syntax is valid (validated in {validationTime.TotalMilliseconds:F1}ms)");
         }
         catch (Exception ex)
         {
-            return $"SQL syntax error: {ex.Message}";
+            return Task.FromResult($"SQL syntax error: {ex.Message}");
         }
     }
 
     [KernelFunction]
     [Description("Get comprehensive database schema information")]
-    public async Task<string> GetDatabaseSchema(
+    public Task<string> GetDatabaseSchema(
         [Description("Database name (optional, uses default if not specified)")] string? databaseName = null)
     {
         try
@@ -109,7 +109,7 @@ public class SqlServerPlugin : IAgentPlugin
             var database = _server!.Databases[dbName];
             
             if (database == null)
-                return $"Database '{dbName}' not found";
+                return Task.FromResult($"Database '{dbName}' not found");
 
             var schema = new
             {
@@ -139,14 +139,14 @@ public class SqlServerPlugin : IAgentPlugin
                     .ToArray()
             };
 
-            return System.Text.Json.JsonSerializer.Serialize(schema, new System.Text.Json.JsonSerializerOptions
+            return Task.FromResult(System.Text.Json.JsonSerializer.Serialize(schema, new System.Text.Json.JsonSerializerOptions
             {
                 WriteIndented = true
-            });
+            }));
         }
         catch (Exception ex)
         {
-            return $"Error retrieving schema: {ex.Message}";
+            return Task.FromResult($"Error retrieving schema: {ex.Message}");
         }
     }
 

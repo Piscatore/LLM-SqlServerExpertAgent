@@ -83,7 +83,7 @@ public class RedisContextManager : IContextManager
                 return null;
             }
 
-            var context = JsonSerializer.Deserialize<AgentContext>(json, new JsonSerializerOptions
+            var context = JsonSerializer.Deserialize<AgentContext>(json!, new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             });
@@ -115,7 +115,7 @@ public class RedisContextManager : IContextManager
             {
                 if (!sessionId.HasValue) continue;
 
-                var context = await GetSessionContextAsync(agentId, sessionId, cancellationToken);
+                var context = await GetSessionContextAsync(agentId, sessionId!, cancellationToken);
                 if (context != null && context.Timestamp >= cutoffTime)
                 {
                     contexts.Add(context);
@@ -147,7 +147,7 @@ public class RedisContextManager : IContextManager
             {
                 if (!sessionId.HasValue) continue;
 
-                var context = await GetSessionContextAsync(agentId, sessionId, cancellationToken);
+                var context = await GetSessionContextAsync(agentId, sessionId!, cancellationToken);
                 if (context != null)
                 {
                     if (string.IsNullOrEmpty(topic) ||

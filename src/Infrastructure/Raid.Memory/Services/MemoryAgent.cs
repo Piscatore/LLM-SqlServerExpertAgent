@@ -317,7 +317,7 @@ public class MemoryAgent : IMemoryAgent
 
     #region Memory Management
 
-    public async Task SummarizeOldContextAsync(TimeSpan olderThan, CancellationToken cancellationToken = default)
+    public Task SummarizeOldContextAsync(TimeSpan olderThan, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -332,6 +332,7 @@ public class MemoryAgent : IMemoryAgent
             // 3. Replacing detailed context with summaries
 
             _logger.LogInformation("Context summarization completed");
+            return Task.CompletedTask;
         }
         catch (Exception ex)
         {

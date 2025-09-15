@@ -321,7 +321,7 @@ public class A2AEnabledAgent : GenericExpertAgent, IA2AAgent
     }
 
     // Expose the SelectSkillForRequestAsync method for A2A usage
-    internal async Task<ISkillPlugin?> SelectSkillForRequestAsync(AgentRequest request)
+    internal new async Task<ISkillPlugin?> SelectSkillForRequestAsync(AgentRequest request)
     {
         return await base.SelectSkillForRequestAsync(request);
     }

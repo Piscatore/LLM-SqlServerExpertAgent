@@ -21,21 +21,84 @@ This guide explains how to integrate the RAID Memory Agent with Claude Code to c
 
 ## 🎯 Integration Options
 
-### Option 1: Custom Claude Code Extension/Hook
+Since Claude Code doesn't natively support custom memory agents, we need to create a bridge between your Claude Code usage and the Memory Agent. Here are three approaches, ordered from most practical to most advanced:
 
-Create a custom hook or extension that integrates the Memory Agent with Claude Code interactions.
+### Option 1: Custom Memory Integration Service ⭐ **RECOMMENDED FOR DEVELOPERS**
 
-### Option 2: Memory-Enhanced Wrapper Service
+**What it is**: A C# service that you manually integrate into your development workflow.
 
-Create a service that wraps Claude Code interactions and adds memory capabilities.
+**How it works**: You create a service class that stores and retrieves memory data, then manually call it before/after Claude Code interactions.
 
-### Option 3: Claude Code Configuration Enhancement
+**Pros**:
+- ✅ Full control over when and what gets stored
+- ✅ Can be integrated into existing .NET projects
+- ✅ Direct access to all Memory Agent features
+- ✅ Production-ready and scalable
 
-Enhance your Claude Code setup with memory-aware configuration and commands.
+**Cons**:
+- ❌ Requires manual integration into your workflow
+- ❌ Need to remember to call memory methods
+- ❌ More setup required
+
+**Best for**: Developers comfortable with C# who want maximum control and integration capabilities.
+
+### Option 2: Memory-Enhanced Wrapper Service ⭐ **RECOMMENDED FOR BEGINNERS**
+
+**What it is**: A standalone console application that simulates an enhanced Claude Code experience with persistent memory.
+
+**How it works**: You run this instead of Claude Code directly. It provides a chat interface that remembers conversations and learns from them.
+
+**Pros**:
+- ✅ Immediate results - works out of the box
+- ✅ No manual integration required
+- ✅ Great for testing and learning how memory works
+- ✅ Shows memory features clearly
+
+**Cons**:
+- ❌ Doesn't actually connect to real Claude Code
+- ❌ Limited to console interface
+- ❌ Simulated responses only
+
+**Best for**: People who want to see how memory enhancement would work before implementing it for real.
+
+### Option 3: Claude Code Configuration Enhancement ⚠️ **ADVANCED**
+
+**What it is**: Enhance your existing Claude Code setup with memory-aware prompts and external scripts.
+
+**How it works**: Modify your CLAUDE.md files and use external scripts (Python/PowerShell) to store memory data and enhance prompts.
+
+**Pros**:
+- ✅ Works with real Claude Code
+- ✅ Can be gradually implemented
+- ✅ Flexible and customizable
+
+**Cons**:
+- ❌ Most complex to set up
+- ❌ Requires scripting knowledge
+- ❌ Manual prompt enhancement needed
+- ❌ Limited integration capabilities
+
+**Best for**: Advanced users who want to enhance their actual Claude Code setup and are comfortable with scripting.
+
 
 ## 🔧 Implementation Examples
 
 ### Option 1: Memory Integration Service
+
+#### What This Code Does
+
+This `ClaudeMemoryIntegration` class is a C# service that bridges between Claude Code interactions and the Memory Agent. It provides three main functions:
+
+1. **Stores conversation context** - Captures user questions, Claude responses, and tools used
+2. **Learns from successful tasks** - Extracts and stores reusable knowledge patterns
+3. **Retrieves relevant knowledge** - Finds similar past solutions to inform current responses
+
+#### How to Use This Code
+
+1. **Add this class to your existing .NET project** where you want memory integration
+2. **Register it in your dependency injection container** alongside the Memory Agent services
+3. **Call the methods before/after Claude Code interactions** to store and retrieve memory data
+4. **Customize the helper methods** (ExtractTopic, ExtractEntities, etc.) to match your specific use cases
 
 ```csharp
 // ClaudeMemoryIntegration.cs
@@ -177,6 +240,30 @@ public class ClaudeMemoryIntegration
 ```
 
 ### Option 2: Memory-Enhanced Wrapper Service
+
+#### What is a Wrapper Service?
+
+A "wrapper service" is a program that sits between you and Claude Code, adding extra functionality. Think of it like adding a memory layer to Claude Code without modifying Claude Code itself.
+
+#### What This Console Application Does
+
+This is a **complete working example** that simulates an enhanced Claude Code experience. It:
+
+1. **Provides a chat interface** - You type questions, it responds (simulated)
+2. **Remembers everything** - Stores all conversations and learns from them
+3. **Shows memory in action** - You can see how it finds and applies past knowledge
+4. **Demonstrates the concept** - Shows exactly how memory enhancement would work
+
+#### How to Run This Example
+
+1. **Create a new Console Application** in Visual Studio: `File > New > Project > Console App`
+2. **Copy both code files** (Program.cs and ClaudeCodeMemoryService.cs) into your new project
+3. **Add the Memory Agent NuGet package** or project reference
+4. **Set up Redis and SQL Server** (see Infrastructure Setup section below)
+5. **Run the application** with `dotnet run`
+6. **Start chatting** - Type questions and see how it builds up memory over time
+
+**Note**: This simulates Claude responses - it doesn't actually connect to Claude Code. It's designed to show you how the memory system works so you can understand the concept before implementing it for real.
 
 ```csharp
 // Program.cs - Console Application
@@ -824,10 +911,27 @@ if __name__ == "__main__":
 
 ## 🛠️ Setup Instructions
 
+**Prerequisites Before Starting:**
+- Windows with Docker Desktop installed (for Redis and SQL Server)
+- Visual Studio 2022 or .NET 9 SDK
+- Basic familiarity with C# and console applications
+- Git (to clone the RAID Memory project)
+
+**These setup instructions apply to ALL three integration options** - every approach needs the underlying Memory Agent infrastructure running.
+
 ### 1. Infrastructure Setup
 
+#### What These Commands Do
+
+These Docker commands start the required database services that the Memory Agent needs:
+
+- **Redis**: Fast storage for conversation context and session data
+- **SQL Server**: Persistent storage for learned knowledge and long-term memory
+
+**Run these commands in PowerShell or Command Prompt:**
+
 ```bash
-# Start Redis for session storage
+# Start Redis for session storage (temporary, fast data)
 docker run -d --name claude-redis -p 6379:6379 redis:alpine
 
 # SQL Server LocalDB should already be available with Visual Studio
@@ -854,16 +958,56 @@ dotnet test tests/Raid.Memory.Tests/Raid.Memory.Tests.csproj
 
 ### 3. Integration Implementation
 
-Choose one of the implementation options above and:
+#### Choose Your Implementation Option
 
-1. **Create the integration service** (Option 1 or 2)
+**For Option 1 (Custom Memory Integration Service):**
+1. Add the `ClaudeMemoryIntegration.cs` class to your existing .NET project
+2. Register Memory Agent services in your `Program.cs` or `Startup.cs`
+3. Call memory methods manually before/after Claude Code interactions
+4. Example: Store context after successful debugging, query memory before starting new tasks
+
+**For Option 2 (Memory-Enhanced Wrapper Service):**
+1. Create a new Console Application project
+2. Copy the provided Program.cs and ClaudeCodeMemoryService.cs files
+3. Add project references to Raid.Memory
+4. Run the application and start experimenting with memory-enhanced interactions
+
+**For Option 3 (Claude Code Configuration Enhancement):**
+1. Update your CLAUDE.md file with the enhanced configuration
+2. Create the Python bridge script in your project directory
+3. Set up hooks to call the bridge script before/after Claude Code interactions
+4. Manually enhance prompts with memory context
+
 2. **Configure the Memory Agent** with your connection strings
 3. **Test the integration** with sample interactions
 4. **Configure Claude Code** to use the enhanced prompts
 
 ### 4. Configuration Files
 
-Create `appsettings.json` for your integration service:
+#### Configuration Prerequisites
+
+**Database Setup**: The Memory Agent will automatically create the necessary database tables when it first runs. You just need:
+- Redis running (for session storage)
+- SQL Server instance available (LocalDB works fine)
+- Valid connection strings in the configuration
+
+#### Configuration Settings Explained
+
+**Logging Levels:**
+- `"Information"` - Standard operational logs
+- `"Debug"` - Detailed diagnostic information (useful for troubleshooting)
+- `"Warning"` - Important issues that don't stop execution
+- `"Error"` - Problems that need attention
+
+**Management Settings:**
+- `SessionContextTtl` - How long to keep conversation context (7 days = "7.00:00:00")
+- `MinKnowledgeConfidence` - Only store knowledge above this confidence level (0.6 = 60%)
+- `DefaultSimilarityThreshold` - How similar knowledge needs to be to be considered relevant (0.7 = 70%)
+- `MaxSimilarKnowledgeResults` - Maximum number of similar knowledge items to return (10 is usually sufficient)
+
+**Connection Strings:**
+- `RedisConnectionString` - Redis server address (localhost:6379 for local Docker)
+- `SqlConnectionString` - SQL Server connection (LocalDB example shown)
 
 ```json
 {
@@ -968,6 +1112,41 @@ Create `appsettings.json` for your integration service:
    - Additional memory context consumes token space
    - Need to balance context richness with prompt limits
    - May require summarization for long interaction histories
+
+## 📚 Additional Learning Resources
+
+### If You're New to These Technologies
+
+**Docker & Containerization:**
+- [Docker Desktop for Windows](https://docs.docker.com/desktop/windows/) - Official installation guide
+- [Docker Getting Started Tutorial](https://docs.docker.com/get-started/) - Learn Docker basics
+
+**Redis:**
+- [Redis Introduction](https://redis.io/docs/about/) - Understanding Redis and key-value storage
+- [Redis Commands Reference](https://redis.io/commands/) - Common Redis operations
+
+**Entity Framework Core:**
+- [EF Core Documentation](https://docs.microsoft.com/en-us/ef/core/) - Official Microsoft documentation
+- [EF Core Getting Started](https://docs.microsoft.com/en-us/ef/core/get-started/) - Beginner's guide
+
+**Dependency Injection in .NET:**
+- [.NET Dependency Injection](https://docs.microsoft.com/en-us/dotnet/core/extensions/dependency-injection) - Understanding DI patterns
+- [ASP.NET Core DI](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection) - DI in web applications
+
+**Vector Embeddings & Semantic Search:**
+- [What are Vector Embeddings?](https://platform.openai.com/docs/guides/embeddings) - OpenAI's explanation
+- [Semantic Search Basics](https://en.wikipedia.org/wiki/Semantic_search) - Understanding semantic search concepts
+
+### Project-Specific Resources
+
+**RAID Platform Architecture:**
+- See `docs/MEMORY_AGENT_USAGE_GUIDE.md` in this project for comprehensive usage examples
+- Review `src/Infrastructure/Raid.Memory/README.md` for technical details
+- Check the test files in `tests/Raid.Memory.Tests/` for practical code examples
+
+**Related Documentation:**
+- [RAID Platform Overview](../README.md) - Understanding the broader RAID ecosystem
+- [SQL Server Expert Agent](../docs/SQL_SERVER_EXPERT_AGENT.md) - How Memory Agent integrates with other agents
 
 ## 💡 Recommendations
 

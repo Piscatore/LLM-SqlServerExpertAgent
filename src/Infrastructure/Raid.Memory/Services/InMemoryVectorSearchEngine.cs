@@ -27,7 +27,7 @@ public class InMemoryVectorSearchEngine : IVectorSearchEngine
         _vectorIndex = new Dictionary<string, (Knowledge, float[])>();
     }
 
-    public async Task<float[]> GenerateEmbeddingAsync(string text, CancellationToken cancellationToken = default)
+    public Task<float[]> GenerateEmbeddingAsync(string text, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(text))
             throw new ArgumentException("Text cannot be null or empty", nameof(text));
@@ -39,7 +39,7 @@ public class InMemoryVectorSearchEngine : IVectorSearchEngine
             var hashEmbedding = CreateHashBasedEmbedding(text);
 
             _logger.LogDebug("Generated embedding for text length: {Length}", text.Length);
-            return hashEmbedding;
+            return Task.FromResult(hashEmbedding);
         }
         catch (Exception ex)
         {
